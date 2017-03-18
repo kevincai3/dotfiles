@@ -1,0 +1,570 @@
+"Preamble {{{1
+set nocompatible               " be iMproved, required
+filetype off                   " required
+set backspace=indent,eol,start
+let mapleader = ','
+
+"NeoBundle Scripts {{{1
+if has("gui_macvim") || has("unix")
+  set rtp+=~/.vim/bundle/neobundle.vim/
+  let path='~/.vim/bundle'
+endif
+
+" Required:
+call neobundle#begin(path)
+
+" Let NeoBundle manage NeoBundle
+" Required:
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+" Bundles here:
+
+" Fuzzy Finder
+if has("mac")
+  NeoBundle 'rking/ag.vim'
+endif
+NeoBundle 'ctrlpvim/ctrlp.vim'
+NeoBundle 'FelikZ/ctrlp-py-matcher' "Faster ctrlp fuzzy finder.
+
+" Vim Motion Extensions
+NeoBundle 'tpope/vim-surround' "Easily change surrunding brackets
+NeoBundle 'tpope/vim-repeat' "Repeat for vim-surround
+NeoBundle 'vim-scripts/argtextobj.vim' "Convert arguments into objects
+NeoBundle 'Lokaltog/vim-easymotion' "Need to learn
+
+" Vim manipulations
+NeoBundle 'godlygeek/tabular' "Easy tables
+NeoBundle 'scrooloose/nerdcommenter' "Easy comments. Need to learn
+
+" Vim Apparence
+NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
+
+" Syntax and Language Specifics
+NeoBundle 'sheerun/vim-polyglot' "Bunch of syntax in one plugin
+NeoBundle 'scrooloose/syntastic' "Linter. Need to configure, Not working!
+NeoBundle 'tmhedberg/SimpylFold' "Python folding
+NeoBundle 'mattn/emmet-vim' "Easier HTML. Need to learn
+
+" Git integration
+NeoBundle 'tpope/vim-fugitive' "Need to learn
+
+" Auto Complete
+NeoBundle 'Valloric/YouCompleteMe'
+NeoBundle 'Raimondi/delimitMate' "Autocomplete brackets
+
+" Directory specific vimrc
+NeoBundle 'embear/vim-localvimrc'
+
+" Perserve window when deleting buffer
+NeoBundle 'qpkorr/vim-bufkill'
+
+" Tree view is sometimes useful
+NeoBundle 'scrooloose/nerdtree' "Need to learn
+
+" Misc
+NeoBundle 'vim-scripts/restore_view.vim' "Preserves folds through buffer enter and leaves
+NeoBundle 'mbbill/undotree'
+
+" Required:
+call neobundle#end()
+
+" If there are uninstalled bundles found on startup,
+" this will conveniently prompt you to install them.
+NeoBundleCheck
+"End NeoBundle Scripts
+
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+syntax enable
+
+"Plugin Configs {{{1
+" Solarized colour scheme {{{2
+colorscheme solarized
+if has("gui_running")
+  set background=light
+else
+  set t_Co=256
+  colorscheme solarized
+  set background=dark
+endif
+
+" Ag vim {{{2
+" Don't jump to first result
+cnorea Ag Ag!
+let g:ag_prg="ag --vimgrep --smart-case --ignore node_modules"
+
+" Emmet {{{2
+
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+let g:user_emmet_expandabbr_key = '<S-Tab>'
+let g:user_emmet_mode='inv'  "enable all functions
+
+" Tagbar {{{2
+let g:tagbar_zoomwidth = 0
+
+" Airline {{{2
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+if has("mac")
+  let g:airline_left_alt_sep = ""
+  let g:airline_left_sep = ""
+  let g:airline_right_alt_sep = ""
+  let g:airline_right_sep = ""
+  let g:airline_symbols.branch = ""
+  let g:airline_symbols.readonly = ""
+  let g:airline_symbols.linenr = ""
+  let g:airline_theme="solarized"
+endif
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnamecollapse = 1
+
+" YouCompleteMe {{{2
+if has ('mac')
+  let g:ycm_autoclose_preview_window_after_insertion = 1
+  let g:ycm_confirm_extra_conf = 0
+  let g:ycm_warning_symbol = '₩₩'
+  let g:ycm_error_symbol = '€€'
+endif
+
+let g:ycm_semantic_triggers = {
+      \'css': [ 're!^\s\s\s', 're!:\s+' ],
+      \}
+let g:ycm_global_ycm_extra_conf = "~/.ycm_extra_conf.py"
+
+"CtrlP {{{2
+
+let g:ctrlp_custom_ignore = 'node_modules\|bower_components'
+
+"For personal Mac:
+if has ("mac")
+  let g:ctrlp_user_command = 'ag %s -l -i -U --nocolor --nogroup --hidden
+        \ --ignore ".git"
+        \ --ignore ".svn"
+        \ --ignore ".hg"
+        \ --ignore ".DS_Store"
+        \ --ignore "libv8"
+        \ --ignore "*.dsv"
+        \ --ignore "*.dsp"
+        \ --ignore "*.dsw"
+        \ --ignore "*.vcproj"
+        \ --ignore "*.*.swp"
+        \ --ignore "*.sln"
+        \ --ignore "bin"
+        \ --ignore "node_modules"
+        \ --ignore "tmp/cache"
+        \ -g ""'
+endif
+let g:ctrlp_map = '<leader>pp'
+nnoremap <leader>pb :CtrlPBuffer<cr>
+let g:ctrlp_switch_buffer='E'
+
+if !has('python')
+  "echo 'In order to use pymatcher, need +python compiled vim'
+else
+  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+endif
+
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_lazy_update = 150
+
+"NERDCommentater {{{2
+map <leader>cc <leader>c<space>
+
+"vim-easymotion {{{2
+vmap f <leader><leader>f
+vmap F <leader><leader>F
+vmap t <leader><leader>t
+vmap T <leader><leader>T
+nmap f <Plug>(easymotion-sl)
+nmap F <leader><leader>F
+nmap t <leader><leader>t
+nmap T <leader><leader>T
+nmap w <leader><leader>w
+nmap W <leader><leader>W
+nmap b <leader><leader>b
+nmap B <leader><leader>B
+nmap e <leader><leader>e
+nmap E <leader><leader>E
+nmap cf c<leader><leader>f
+nmap cF c<leader><leader>F
+nmap ct c<leader><leader>t
+nmap cT c<leader><leader>T
+nmap df d<leader><leader>f
+nmap dF d<leader><leader>F
+nmap dt d<leader><leader>t
+nmap dT d<leader><leader>T
+
+
+"SimpylFold {{{2
+let g:SympylFold_docstring_preview = 1
+"let g:SympylFold_fold_docstring = 0
+
+autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
+autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
+
+"Syntastic {{{2
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_args = "-c ~/.eslintrc.json"
+
+let g:syntastic_cpp_checkers = ['c++', 'g++']
+
+
+" Ignoring angular problems
+let g:syntastic_html_tidy_ignore_errors = [
+      \'proprietary attribute',
+      \'trimming empty <',
+      \'unescaped &',
+      \'lacks "action',
+      \'discarding unexpected',
+      \'is not recognized!'
+      \]
+
+" Ignoring coachletic angular tags
+let g:syntastic_html_tidy_quiet_messages = {
+      \'regex': [
+      \'<ccc-.*> is not recognized!',
+      \'discarding unexpected <ccc-.*>',
+      \'discarding unexpected </ccc-.*>',
+      \'trimming empty <span>',
+      \'<sfm-.*> is not recognized!',
+      \'discarding unexpected <sfm-.*>',
+      \'discarding unexpected </sfm-.*>',
+      \]
+      \}
+
+
+"delimitMate {{{2
+let g:delimitMate_expand_cr = 1
+let g:delimitMate_expand_space = 2
+
+"localvimrc {{{2
+let g:localvimrc_whitelist='.*/proj/\.lvimrc'
+
+"Vim Basic Settings {{{1
+
+" Setting up persistent undo
+if has("persistent_undo")
+  let MyUndoDir='~/.undodir/'
+  if !isdirectory(MyUndoDir)
+    call system('mkdir -p ' . MyUndoDir)
+  endif
+  set undofile
+  set undodir=~/.undodir/
+endif
+
+" Line Numbers
+set number
+set encoding=utf-8
+set history=700
+set showcmd
+
+" Set autoindent
+set autoindent
+
+" Used for restore_view
+set viewoptions=cursor,folds,slash,unix
+
+" Highlights while searching
+set incsearch
+set hlsearch
+
+" Turn off autofolding
+"set nofoldenable
+
+" Unix line endings
+set ff=unix
+
+" Displays Column Number
+set ruler
+
+" Commandline Height
+set cmdheight=2
+
+" Always show the status line
+set laststatus=2
+
+" Hides buffer when abandoned
+set hidden
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw
+
+" For regular expressions turn magic on
+set magic
+
+" No annoying sound on errors
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
+set tm=500
+
+" Scroll with context
+set scroll=3
+
+" Tab settings
+set expandtab
+set shiftwidth=2
+set softtabstop=-1 "Make it depend on shiftwidth
+set tabstop=2
+
+" Fold manually TODO: Maybe only apply this for .vimrc?
+set foldmethod=marker
+
+" Don't auto close all folds
+set foldlevelstart=99
+
+" Case insensitve if all lowercase. Else case sensitive.
+set ignorecase
+set smartcase
+
+" Autocompletes filenames like bash
+set wildmode=longest,list
+
+" Shows unprintable characters
+set list
+set listchars=eol:¬,tab:▶·
+hi SpecialKey guibg=#FEF7E7
+
+" Prevent two file changes on save
+set nowritebackup
+
+" Invisible character colors
+"highlight NonText guifg=#4a4a59
+"highlight SpecialKey guifg=#4a4a59
+
+set splitright
+
+" Mark lines over 80
+
+highlight OverLength ctermbg=10 ctermfg=7 guibg=#e2d6b6
+match OverLength /\%81v.\+/
+
+" Always have lines showing when scrolling
+set scrolloff=5
+
+if has("gui_running")
+  set guioptions+=Tmrl
+  set guioptions-=Tmrl
+  if has ("mac")
+    set guifont=Menlo\ for\ Powerline:h12
+    set guioptions+=r
+  endif
+endif
+
+" Allow omni completion
+set omnifunc=syntaxcomplete#Complete
+
+" Allow modelines
+set modeline
+
+"Custom Mappings {{{1
+"Changes directory to current file TODO: Put this in shortcutes
+nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
+
+"Don't move on *
+nnoremap * *<c-o>
+
+" Centers word in middle on n and N
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" Gotta put that space to good use
+nnoremap <space> :bn<cr>
+
+" Shift space does not work in terminal mode!
+" We'll need a GUI for nvim
+nnoremap <S-space> :bp<cr>
+
+" Visual mode pressing * or # searches for the current selection
+vnoremap <silent> * :call VisualSelection('f')<CR>
+vnoremap <silent> # :call VisualSelection('b')<CR>
+
+" Treat long lines as break lines (useful when moving around in them)
+map j gj
+map k gk
+
+" Yanks from cursor to end of line.
+map Y y$
+
+" Quickly edit/reload the vimrc file
+nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
+nnoremap <leader>lv :so $MYVIMRC<CR>
+
+" Quickly edit notes
+nnoremap <leader>en :e ~/dev/my-vimrc/shortcuts.txt<CR>
+
+" Switch between source and header file
+nnoremap <silent> <leader>sf :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+nnoremap <silent> <leader>SF :vs <CR>:e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+
+" Remove highlighting from searching
+nnoremap <silent>\ :noh<CR>
+
+" Easy resizing
+"nnoremap <c-s> :set lines+=1<cr>
+"nnoremap <c-a> :set lines-=1<cr>
+"nnoremap <c-q> :set columns-=3<cr>
+"nnoremap <c-w> :set columns+=3<cr>
+
+" Allow quick window switching
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Re-highlight selection after shifting
+vnoremap > >gv
+vnoremap < <gv
+
+" Shift key is too hard to press
+vnoremap ; :
+nnoremap ; :
+
+" Commandline behaviour
+cnoremap <c-a> <home>
+cnoremap <c-e> <end>
+
+" Faster movements
+nnoremap s jjjj
+nnoremap S kkkk
+
+" Not working
+nnoremap <leader>s :%s//gc<left><left><left>
+vnoremap <leader>s "my:%s/<c-r>m//gc<left><left><left>
+
+vnoremap / "my/<c-r>m<cr>
+nnoremap <leader>tt :Tabularize /
+nnoremap <leader>tb :TagbarToggle<CR>
+nnoremap <leader>u :UndotreeToggle<CR>
+nnoremap <leader>* :%s/\<<C-r><C-w>\>//gc<left><left><left>
+
+if has('nvim')
+  " Terminfo problem
+  " https://github.com/neovim/neovim/issues/2048#issuecomment-78045837
+  " Current workaround
+  nmap <BS> <C-w>h
+
+  tnoremap <Esc> <C-\><C-n>
+
+  tnoremap <A-h> <C-\><C-n><C-w>h
+  tnoremap <A-j> <C-\><C-n><C-w>j
+  tnoremap <A-k> <C-\><C-n><C-w>k
+  tnoremap <A-l> <C-\><C-n><C-w>l
+  nnoremap <A-h> <C-w>h
+  nnoremap <A-j> <C-w>j
+  nnoremap <A-k> <C-w>k
+  nnoremap <A-l> <C-w>l
+endif
+
+"Not working!!
+nnoremap <leader>ct :!ctags %<CR>
+
+" Abbreviations for commandline
+"ca WQ wq
+ca Wq wq
+"ca Q q
+"ca W w
+ca do DiffOrig
+ca df diffoff
+"Commands {{{1
+
+" Cannot have the pipe in cnorea
+"command! WQ w|bd
+"cnorea wq WQ
+
+cnorea b BD
+
+command! WBD w|BD
+cnorea wb WBD
+
+"User Defined Functions {{{1
+function! BindCommand()
+
+endfunction
+
+if !exists(":ClearTraillingWhitespace")
+  command ClearTraillingWhitespace %s/\s\+$//
+endif
+
+"TODO: Define function for binding commands only if command does not exists
+" Diff this file with the corresponding file on disk
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
+endif
+
+if has ('mac')
+  if exists(":EditAlias")
+    delcommand EditAlias
+  endif
+  command EditAlias e ~/.alias.sh
+  if exists(":OpenTerm")
+    delcommand OpenTerm
+  endif
+  command OpenTerm call system("open -a Terminal '".getcwd()."'")
+endif
+
+"Autocmds {{{1
+
+augroup vimrcEx
+  "Clear all autocmds in the group
+  autocmd!
+  "Jump to last cursor position
+  autocmd BufReadPost *
+        \ if line("'\'") > 0 && line("'\'") <= line("$") |
+        \    exe "normal g`\"" |
+        \ endif
+augroup END
+
+augroup blah
+  autocmd!
+  " Turn off autoindent for comments for all files
+  " :help |fo-table|
+  autocmd FileType * setlocal formatoptions-=cro
+  autocmd FileType html setlocal shiftwidth=2
+  autocmd FileType sql setlocal shiftwidth=2
+  autocmd FileType py setlocal shiftwidth=2
+  autocmd FileType ejs setlocal syntax=html
+  autocmd Filetype jsx setlocal filetype=javascript.jsx
+
+  " For node projects
+  autocmd BufNewFile,BufRead www setfiletype javascript
+
+  autocmd BufNewFile,BufRead *.ejs setfiletype ejs
+  autocmd BufNewFile,BufRead *.tex setfiletype tex
+  autocmd BufNewFile,BufRead *.nvimrc setfiletype vim
+
+augroup END
+
+" Neovim {{{1
+if has("nvim")
+  " Faster startup
+  let g:python_host_prog = '/usr/local/bin/python2'
+  let g:python3_host_prog = '/Users/kevinc/.pyenv/shims/python'
+
+  autocmd!
+  augroup nvimGroup
+    " Don't display invisible characters
+    autocmd TermOpen * setlocal nolist
+
+    " Don't highlight words over 80 lines
+    autocmd TermOpen match none
+
+  augroup END
+endif
+
+syntax enable
