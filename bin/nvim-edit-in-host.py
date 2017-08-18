@@ -12,7 +12,8 @@ if not args or len(args) <= 1:
     print("Usage: {} <filename> ...".format(sys.argv[0]))
     sys.exit(1)
 
-args = [os.path.abspath(f) for f in args[1:]]
+# Need to escape spaces
+args = [os.path.abspath(f).replace(' ', '\ ') for f in args[1:]]
 
 addr = os.environ.get("NVIM_LISTEN_ADDRESS", None)
 if not addr:
@@ -20,6 +21,7 @@ if not addr:
 
 nvim = attach("socket", path=addr)
 
+# Don't use buffers that match the following.
 # Ignore Patterns:
 # "^\ *$", "^term", "^/usr/local/Cellar/.*/doc/.*.txt$"
 def match_pattern(name):

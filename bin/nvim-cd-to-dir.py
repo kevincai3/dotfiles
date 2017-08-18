@@ -12,7 +12,7 @@ if args and len(args) > 2:
     print ("Usage: {} [dirname] ..".format(sys.argv[0]))
     sys.exit(1)
 
-path = os.path.abspath(args[1]) if len(args) == 2 else os.getcwd()
+path = os.path.abspath(args[1]).replace(' ', '\ ') if len(args) == 2 else os.getcwd().replace(' ', '\ ')
 
 addr = os.environ.get("NVIM_LISTEN_ADDRESS", None)
 if not addr:

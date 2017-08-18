@@ -26,7 +26,6 @@
 ## Javascript Tools
 - yarn
 
-## Prezto Plugins
+## Prezto Plugins (Autocomplete)
 - fasd
-
-
+- yarn
