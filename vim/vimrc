@@ -1,17 +1,14 @@
 "Preamble {{{1
-set nocompatible               " be iMproved, required
+if &compatible
+  set nocompatible             " be iMproved, required
+endif
 filetype off                   " required
 set backspace=indent,eol,start
 let mapleader = ','
 
 "NeoBundle Scripts {{{1
-if has("gui_macvim") || has("unix")
-  set rtp+=~/.vim/bundle/neobundle.vim/
-  let path='~/.vim/bundle'
-endif
-
-" Required:
-call neobundle#begin(path)
+set rtp+=~/.vim/bundle/neobundle.vim/
+call neobundle#begin(expand('~/.vim/bundle'))
 
 " Let NeoBundle manage NeoBundle
 " Required:
@@ -211,7 +208,7 @@ autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
 
 "Syntastic {{{2
 set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
@@ -553,8 +550,13 @@ augroup END
 " Neovim {{{1
 if has("nvim")
   " Faster startup
-  let g:python_host_prog = '/usr/local/bin/python2'
-  let g:python3_host_prog = '/Users/kevinc/.pyenv/shims/python'
+  if !empty(glob("/Users/kevin"))
+    let g:python_host_prog = '/Users/kevin/.pyenv/versions/neovim2/bin/python'
+    let g:python3_host_prog = '/Users/kevin/.pyenv/versions/neovim3/bin/python'
+  else
+    let g:python_host_prog = '/usr/local/bin/python2'
+    let g:python3_host_prog = '/Users/kevinc/.pyenv/shims/python'
+  endif
 
   autocmd!
   augroup nvimGroup
