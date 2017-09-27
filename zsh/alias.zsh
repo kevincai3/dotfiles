@@ -5,3 +5,4 @@ alias dcp=docker-compose
 
 alias jj='fasd_cd -i'
 alias j='fasd_cd -i -1'
+alias vim='nvim'
