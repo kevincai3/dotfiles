@@ -29,8 +29,9 @@
 ## Javascript Tools
 - yarn
 
-## Prezto Plugins
+## Prezto Plugins (Autocomplete)
 - fasd
+- yarn
 
 ## Misc Stuff
 - [fira code](https://github.com/tonsky/FiraCode) (size 12)
@@ -48,4 +49,3 @@
   - `echo "source ~/dotfiles/zsh/alias.sh" > .zshrc`
 - Ag:
   - `ln -s ~/dotfiles/ag/ignore ~/.agignore'`
-

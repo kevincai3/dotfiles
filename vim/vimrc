@@ -83,13 +83,7 @@ syntax enable
 "Plugin Configs {{{1
 " Solarized colour scheme {{{2
 colorscheme solarized
-if has("gui_running")
-  set background=light
-else
-  set t_Co=256
-  colorscheme solarized
-  set background=dark
-endif
+set background=dark
 
 " Ag vim {{{2
 " Don't jump to first result
@@ -573,8 +567,8 @@ if has("nvim")
     let g:python_host_prog = '/Users/kevin/.pyenv/versions/neovim2/bin/python'
     let g:python3_host_prog = '/Users/kevin/.pyenv/versions/neovim3/bin/python'
   else
-    let g:python_host_prog = '/usr/local/bin/python2'
-    let g:python3_host_prog = '/Users/kevinc/.pyenv/shims/python'
+    let g:python_host_prog = '/Users/kevin/.pyenv/versions/neovim2/bin/python'
+    let g:python3_host_prog = '/Users/kevin/.pyenv/versions/neovim3/bin/python'
   endif
 
   autocmd!
