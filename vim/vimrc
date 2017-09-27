@@ -40,12 +40,15 @@ NeoBundle 'vim-airline/vim-airline-themes'
 
 " Syntax and Language Specifics
 NeoBundle 'sheerun/vim-polyglot' "Bunch of syntax in one plugin
-NeoBundle 'scrooloose/syntastic' "Linter. Need to configure, Not working!
+"NeoBundle 'scrooloose/syntastic' "Linter. Need to configure, Not working!
+NeoBundle 'neomake/neomake' "Async linting
 NeoBundle 'tmhedberg/SimpylFold' "Python folding
 NeoBundle 'mattn/emmet-vim' "Easier HTML. Need to learn
+NeoBundle 'flowtype/vim-flow' "autocomplete with flow and check for errors on save
 
 " Git integration
 NeoBundle 'tpope/vim-fugitive' "Need to learn
+NeoBundle 'tpope/vim-rhubarb' "Github extension for fugitive
 
 " Auto Complete
 NeoBundle 'Valloric/YouCompleteMe'
@@ -251,8 +254,16 @@ let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 2
 
 "localvimrc {{{2
-let g:localvimrc_whitelist='.*/proj/\.lvimrc'
+let g:localvimrc_whitelist='~/flexport/.lvimrc'
 
+"polyglot {{{2
+let g:javascript_plugin_flow = 1
+
+"neomake {{{2
+let g:neomake_open_list = 2
+let g:neomake_javascript_enabled_markers = ['eslint']
+
+autocmd! BufWritePost,BufEnter * Neomake
 "Vim Basic Settings {{{1
 
 " Setting up persistent undo
@@ -369,6 +380,9 @@ set omnifunc=syntaxcomplete#Complete
 " Allow modelines
 set modeline
 
+" Allow mouse scrolls
+set mouse=a
+
 "Custom Mappings {{{1
 "Changes directory to current file TODO: Put this in shortcutes
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
@@ -450,6 +464,18 @@ nnoremap <leader>tb :TagbarToggle<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
 nnoremap <leader>* :%s/\<<C-r><C-w>\>//gc<left><left><left>
 
+"Not working!!
+nnoremap <leader>ct :!ctags %<CR>
+
+" Abbreviations for commandline
+"ca WQ wq
+ca Wq wq
+"ca Q q
+"ca W w
+ca do DiffOrig
+ca df diffoff
+
+" Neovim Features {{{1
 if has('nvim')
   " Terminfo problem
   " https://github.com/neovim/neovim/issues/2048#issuecomment-78045837
@@ -466,18 +492,11 @@ if has('nvim')
   nnoremap <A-j> <C-w>j
   nnoremap <A-k> <C-w>k
   nnoremap <A-l> <C-w>l
+
+  " Increase how many lines are kept in the terminal buffer
+  set scrollback=100000
 endif
 
-"Not working!!
-nnoremap <leader>ct :!ctags %<CR>
-
-" Abbreviations for commandline
-"ca WQ wq
-ca Wq wq
-"ca Q q
-"ca W w
-ca do DiffOrig
-ca df diffoff
 "Commands {{{1
 
 " Cannot have the pipe in cnorea
