@@ -16,11 +16,14 @@
 - openssl
 - git
 - yarn
+- pgcli
 
-
-## Mac Tools
+## Other Utils
 - nvm
 - iTerm2
+- hammerspoon
+- typora
+- docker
 
 ## Python Tools
 - Pygments (the executable is called pygmentize)

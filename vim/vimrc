@@ -18,7 +18,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Fuzzy Finder
 if has("mac")
-  NeoBundle 'rking/ag.vim'
+  NeoBundle 'mileszs/ack.vim'
 endif
 NeoBundle 'ctrlpvim/ctrlp.vim'
 NeoBundle 'FelikZ/ctrlp-py-matcher' "Faster ctrlp fuzzy finder.
@@ -85,10 +85,13 @@ syntax enable
 colorscheme solarized
 set background=dark
 
-" Ag vim {{{2
+" Ack vim {{{2
 " Don't jump to first result
-cnorea Ag Ag!
-let g:ag_prg="ag --vimgrep --smart-case --ignore node_modules"
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep --smart-case --ignore node_modules'
+endif
+cnorea Ag Ack!
+cnorea ag Ack
 
 " Emmet {{{2
 
@@ -159,9 +162,7 @@ let g:ctrlp_map = '<leader>pp'
 nnoremap <leader>pb :CtrlPBuffer<cr>
 let g:ctrlp_switch_buffer='E'
 
-if !has('python')
-  "echo 'In order to use pymatcher, need +python compiled vim'
-else
+if has('python')
   let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 endif
 
@@ -578,6 +579,9 @@ if has("nvim")
 
     " Don't highlight words over 80 lines
     autocmd TermOpen match none
+
+    " Don't show line numbers in terminal mode
+    autocmd TermOpen * setlocal nonumber
 
   augroup END
 endif

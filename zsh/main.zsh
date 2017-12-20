@@ -1,9 +1,7 @@
+PATH=$HOME/dotfiles/bin:$PATH
 DOTFILES_PATH=~/dotfiles/
 
-source $DOTFILES_PATH/zsh/startup.zsh
 source $DOTFILES_PATH/zsh/alias.zsh
-
-PATH=$HOME/dotfiles/bin:$PATH
 
 function vim() {
   if [ -z ${NVIM_LISTEN_ADDRESS+x} ]; then
