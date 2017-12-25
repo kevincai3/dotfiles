@@ -18,7 +18,3 @@ function nvim() {
     nvim-edit-in-host.py "$@"
   fi
 }
-
-# tabtab source for yarn package
-# uninstall by removing these lines or running `tabtab uninstall yarn`
-[[ -f /Users/kevin/.nvm/versions/node/v7.7.3/lib/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.zsh ]] && . /Users/kevin/.nvm/versions/node/v7.7.3/lib/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.zsh
