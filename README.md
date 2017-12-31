@@ -7,7 +7,6 @@
 ## Homebrew Utils
 - fasd
 - jq
-- the_silver_searcher
 - neovim
 - pyenv
 - macvim
@@ -17,6 +16,8 @@
 - git
 - yarn
 - pgcli
+- fzf
+- ripgrep
 
 ## Other Utils
 - nvm
