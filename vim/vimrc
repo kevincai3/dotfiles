@@ -19,11 +19,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Bundles here:
 
-" Fuzzy Finder
-if has("mac")
-  NeoBundle 'rking/ag.vim'
-endif
-
 " Fuzzy file searching
 NeoBundle '/usr/local/opt/fzf'
 NeoBundle 'junegunn/fzf.vim'
