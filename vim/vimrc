@@ -1,85 +1,77 @@
 "Preamble {{{1
 set nocompatible               " be iMproved, required
-filetype off                   " required
 set backspace=indent,eol,start
 let mapleader = ','
 
-"NeoBundle Scripts {{{1
-if has("gui_macvim") || has("unix")
-  set rtp+=~/.vim/bundle/neobundle.vim/
-  let path='~/.vim/bundle'
+if executable('stack')
+  " We need a project specific path for haskell tools to work
+  let $PATH .=  substitute((':' . system('stack path --compiler-bin') . '/'), '[\r|\n]', '', 'g')
 endif
+" VimPlug - Plugin Definitions {{{1
 
-" Required:
-call neobundle#begin(path)
-
-" Let NeoBundle manage NeoBundle
-" Required:
-NeoBundleFetch 'Shougo/neobundle.vim'
-
+call plug#begin('~/.vim/plugged')
 " Bundles here:
 
 " Fuzzy file searching
-NeoBundle '/usr/local/opt/fzf'
-NeoBundle 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --bin'}
+Plug 'junegunn/fzf.vim'
 
 " Searching
-NeoBundle 'brooth/far.vim' ,'dev'
+Plug 'brooth/far.vim', {'branch': 'dev'} "Only dev branch has support for ripgrep
+Plug 'jremmen/vim-ripgrep'
 
 " Vim Motion Extensions
-NeoBundle 'tpope/vim-surround' "Easily change surrunding brackets
-NeoBundle 'tpope/vim-repeat' "Repeat for vim-surround
-NeoBundle 'vim-scripts/argtextobj.vim' "Convert arguments into objects
-NeoBundle 'Lokaltog/vim-easymotion' "Need to learn
+Plug 'tpope/vim-surround' "Easily change surrunding brackets
+  Plug 'tpope/vim-repeat' "Repeat for vim-surround
+Plug 'vim-scripts/argtextobj.vim' "Convert arguments into objects
+Plug 'Lokaltog/vim-easymotion' "Jump around buffer
 
 " Vim manipulations
-NeoBundle 'godlygeek/tabular' "Easy tables
-NeoBundle 'tpope/vim-commentary' "Easy Comments
+Plug 'godlygeek/tabular' "Easy tables
+Plug 'scrooloose/nerdcommenter' "Easy Comments
 
 " Vim Apparence
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'vim-airline/vim-airline'
-NeoBundle 'vim-airline/vim-airline-themes'
+Plug 'altercation/vim-colors-solarized'
+Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
 
 " Syntax and Language Specifics
-NeoBundle 'sheerun/vim-polyglot' "Bunch of syntax in one plugin
-NeoBundle 'w0rp/ale' "Linter
-NeoBundle 'tmhedberg/SimpylFold' "Python folding
-NeoBundle 'mattn/emmet-vim' "Easier HTML. Need to learn
+Plug 'sheerun/vim-polyglot' "Bunch of syntax in one plugin
+Plug 'w0rp/ale' "Linter
+Plug 'sbdchd/neoformat' "Code formatting
+
+" Language specifics
+Plug 'mattn/emmet-vim' "Easier HTML. Need to learn
+Plug 'hail2u/vim-css3-syntax' "Extra CSS3 highlighting
+Plug 'bitc/vim-hdevtools' "Haskell type information
 
 " Git integration
-NeoBundle 'tpope/vim-fugitive' "Need to learn
+Plug 'tpope/vim-fugitive' "Need to learn
 
 " Auto Complete
-NeoBundle 'Valloric/YouCompleteMe'
-NeoBundle 'Raimondi/delimitMate' "Autocomplete brackets
+"Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer' }
+Plug 'Raimondi/delimitMate' "Autocomplete brackets
 
 " Directory specific vimrc
-NeoBundle 'embear/vim-localvimrc'
+Plug 'embear/vim-localvimrc'
 
 " Perserve window when deleting buffer
-NeoBundle 'qpkorr/vim-bufkill'
+Plug 'qpkorr/vim-bufkill'
 
 " Tree view is sometimes useful
-NeoBundle 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
 
 " Misc
-NeoBundle 'vim-scripts/restore_view.vim' "Preserves folds through buffer enter and leaves
-NeoBundle 'mbbill/undotree' "AMAZING
-NeoBundle 'wincent/terminus' "Better iterm integration
+Plug 'vim-scripts/restore_view.vim' "Preserves folds through buffer enter and leaves
+Plug 'mbbill/undotree' "AMAZING
+Plug 'wincent/terminus' "Better iterm integration
+Plug 'rizzatti/dash.vim' "Dash Integrations
+
+" Testing autocomplete
+Plug 'zxqfl/tabnine-vim'
 
 " Required:
-call neobundle#end()
-
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
-NeoBundleCheck
-"End NeoBundle Scripts
-
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-syntax enable
+call plug#end()
 
 "Plugin Configs {{{1
 " Solarized colour scheme {{{2
@@ -92,10 +84,6 @@ else
   set background=dark
 endif
 
-" Ag vim {{{2
-" Don't jump to first result
-cnorea Ag Ag!
-let g:ag_prg="ag --vimgrep --smart-case --ignore node_modules"
 
 " Emmet {{{2
 
@@ -137,12 +125,14 @@ if has ('mac')
   let g:ycm_error_symbol = '€€'
 endif
 
+let g:ycm_disable_for_files_larger_than_kb = 40
+
 let g:ycm_semantic_triggers = {
       \'css': [ 're!^\s\s\s', 're!:\s+' ],
       \}
 let g:ycm_global_ycm_extra_conf = "~/.ycm_extra_conf.py"
 
-"CtrlP {{{2
+"CtrlP (Deprecated; Using fzf instead) {{{2
 
 let g:ctrlp_custom_ignore = 'node_modules\|bower_components'
 
@@ -169,6 +159,8 @@ endif
 "fzf {{{2
 " Jump to exsting window if possible
 let g:fzf_buffers_jump = 1
+
+let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --no-messages --hidden --follow --glob "!.git/*"'
 
 nnoremap <silent> <leader>pp :Files<CR>
 nnoremap <silent> <leader>pb :Buffers<CR>
@@ -215,8 +207,32 @@ let g:localvimrc_whitelist='.*/proj/\.lvimrc'
 " ale {{{2
 let g:ale_lint_on_text_changed = 'never'
 
-" far {{{2
+let g:ale_linters = {
+      \ 'javascript': ['eslint'],
+      \ 'haskell': ['hdevtools'],
+      \}
 
+" far {{{2
+let g:far#source='rg'
+let g:far#highlight_match=0
+let g:far#limit=10000
+let g:far#result_preview=0
+let g:far#preview_window_height=20
+let g:far#preview_window_scroll_step=4
+
+" polyglot {{{2
+let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
+let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
+let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+
+" neoformat {{{2
+" enable basic formatting when filetype is not found
+let g:neoformat_basic_format_align = 1
+let g:neoformat_try_formatprg = 1
 
 "Vim Basic Settings {{{1
 
@@ -322,7 +338,7 @@ set scrolloff=5
 if has("gui_running")
   set guioptions+=Tmrl
   set guioptions-=Tmrl
-  if has ("mac")
+  if has("mac")
     set guifont=Menlo\ for\ Powerline:h12
     set guioptions+=r
   endif
@@ -334,8 +350,12 @@ set omnifunc=syntaxcomplete#Complete
 " Allow modelines
 set modeline
 
+if executable('rg') == 1
+  set grepprg=rg\ --vimgrep
+end
+
 "Custom Mappings {{{1
-"Changes directory to current file TODO: Put this in shortcutes
+"Changes directory to current file TODO: Put this in shortcuts
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
 "Don't move on *
@@ -353,6 +373,7 @@ nnoremap <space> :bn<cr>
 nnoremap <S-space> :bp<cr>
 
 " Visual mode pressing * or # searches for the current selection
+" TODO: Doesn't work
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
 
@@ -368,6 +389,7 @@ nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
 nnoremap <leader>lv :so $MYVIMRC<CR>
 
 " Quickly edit notes
+" TODO: NOT VALID FILE PATH
 nnoremap <leader>en :e ~/dev/my-vimrc/shortcuts.txt<CR>
 
 " Switch between source and header file
@@ -405,15 +427,23 @@ cnoremap <c-e> <end>
 nnoremap s jjjj
 nnoremap S kkkk
 
-" Not working
-nnoremap <leader>s :%s//gc<left><left><left>
-vnoremap <leader>s "my:%s/<c-r>m//gc<left><left><left>
+" Search (global)
+nnoremap <leader>s :Rg <c-r><c-w>
+vnoremap <leader>s "my:Rg "<c-r>m"
+
+" Find and Replace (local)
+nnoremap <leader>r :%s//gc<left><left><left>
+vnoremap <leader>r "my:%s/<c-r>m//gc<left><left><left>
+
+" Find and Replace (global)
+nnoremap <leader>R :Far <c-r><c-w>  *<left><left>
+vnoremap <leader>R "my:Far "<c-r>m"  *<left><left>
 
 vnoremap / "my/<c-r>m<cr>
 nnoremap <leader>tt :Tabularize /
-nnoremap <leader>tb :TagbarToggle<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
-nnoremap <leader>* :%s/\<<C-r><C-w>\>//gc<left><left><left>
+
+nnoremap ==G :Neoformat<CR>
 
 if has('nvim')
   " Terminfo problem
@@ -421,7 +451,7 @@ if has('nvim')
   " Current workaround
   nmap <BS> <C-w>h
 
-  tnoremap <F2> <C-\><C-n>
+  tnoremap <ESC> <C-\><C-n>
 
   tnoremap <A-h> <C-\><C-n><C-w>h
   tnoremap <A-j> <C-\><C-n><C-w>j
@@ -432,6 +462,8 @@ if has('nvim')
   nnoremap <A-k> <C-w>k
   nnoremap <A-l> <C-w>l
 endif
+
+nmap <leader>d <Plug>DashSearch
 
 "Not working!!
 nnoremap <leader>ct :!ctags %<CR>
@@ -523,10 +555,12 @@ if has("nvim")
     " Don't display invisible characters
     autocmd TermOpen * setlocal nolist
 
-    " Don't highlight words over 80 lines
-    autocmd TermOpen match none
+    autocmd TermOpen * setlocal nonumber
 
+    " Don't highlight words over 80 lines
+    autocmd TermOpen * match none
   augroup END
 endif
 
+" Needs to be defined here for some reason (probably some plugin messing with the setting)
 syntax enable

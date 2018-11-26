@@ -9,26 +9,30 @@
 - jq
 - neovim
 - pyenv
-- macvim
 - trash
 - fswatch
 - openssl
 - git
 - yarn
 - pgcli
-- fzf
 - ripgrep
 
 ## Other Utils
 - nvm
 - iTerm2
 - hammerspoon
+- dynalist
+- cryptomator
 - typora
 - docker
 
 ## Python Tools
 - Pygments (the executable is called pygmentize)
+- scipy
+- numpy
+- neovim
 - grip
+
 
 ## Javascript Tools
 - yarn
