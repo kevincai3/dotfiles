@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+PREV_COMMIT_MSG=$(git log -1 --pretty=%B)
+DIFFERENCE_WITH_MASTER=$(git cherry master)
+
+shopt -s nocasematch # Allow case insensitive match
+if [[ $PREV_COMMIT_MSG == *"wip"* ]] && [[ $DIFFERENCE_WITH_MASTER != "" ]]; then
+  echo "Previous commit is an WIP, please reset with 'git reset --soft HEAD^ && git reset' or 'grs!'"
+  exit 1
+fi

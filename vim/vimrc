@@ -34,6 +34,7 @@ Plug 'scrooloose/nerdcommenter' "Easy Comments
 Plug 'altercation/vim-colors-solarized'
 Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
+Plug 'kshenoy/vim-signature' "Show marks in the gutter
 
 " Syntax and Language Specifics
 Plug 'sheerun/vim-polyglot' "Bunch of syntax in one plugin
@@ -41,16 +42,18 @@ Plug 'w0rp/ale' "Linter
 Plug 'sbdchd/neoformat' "Code formatting
 
 " Language specifics
-Plug 'mattn/emmet-vim' "Easier HTML. Need to learn
 Plug 'hail2u/vim-css3-syntax' "Extra CSS3 highlighting
 Plug 'bitc/vim-hdevtools' "Haskell type information
 
 " Git integration
 Plug 'tpope/vim-fugitive' "Need to learn
+  Plug 'tpope/vim-rhubarb' "Github plugins
 
 " Auto Complete
 "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer' }
 Plug 'Raimondi/delimitMate' "Autocomplete brackets
+" Testing autocomplete
+Plug 'zxqfl/tabnine-vim'
 
 " Directory specific vimrc
 Plug 'embear/vim-localvimrc'
@@ -67,35 +70,11 @@ Plug 'mbbill/undotree' "AMAZING
 Plug 'wincent/terminus' "Better iterm integration
 Plug 'rizzatti/dash.vim' "Dash Integrations
 
-" Testing autocomplete
-Plug 'zxqfl/tabnine-vim'
-
 " Required:
 call plug#end()
 
 "Plugin Configs {{{1
-" Solarized colour scheme {{{2
-colorscheme solarized
-if has("gui_running")
-  set background=light
-else
-  set t_Co=256
-  colorscheme solarized
-  set background=dark
-endif
-
-
-" Emmet {{{2
-
-let g:user_emmet_install_global = 0
-autocmd FileType html,css EmmetInstall
-let g:user_emmet_expandabbr_key = '<S-Tab>'
-let g:user_emmet_mode='inv'  "enable all functions
-
-" Tagbar {{{2
-let g:tagbar_zoomwidth = 0
-
-" Airline {{{2
+" airline {{{2
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
@@ -117,44 +96,40 @@ let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#ale#error_symbol = 'E:'
 let g:airline#extensions#ale#warning_symbol = 'W:'
 
-" YouCompleteMe {{{2
-if has ('mac')
-  let g:ycm_autoclose_preview_window_after_insertion = 1
-  let g:ycm_confirm_extra_conf = 0
-  let g:ycm_warning_symbol = '₩₩'
-  let g:ycm_error_symbol = '€€'
-endif
+" ale {{{2
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_set_ballons = 1 " NVIM currently doesn't support hovers
 
-let g:ycm_disable_for_files_larger_than_kb = 40
-
-let g:ycm_semantic_triggers = {
-      \'css': [ 're!^\s\s\s', 're!:\s+' ],
+let g:ale_linters = {
+      \ 'javascript': ['eslint', 'flow'],
+      \ 'haskell': ['hdevtools'],
+      \ 'ruby': ['rubocop']
       \}
-let g:ycm_global_ycm_extra_conf = "~/.ycm_extra_conf.py"
 
-"CtrlP (Deprecated; Using fzf instead) {{{2
+nmap <silent> <leader>j :ALENext<CR>
+nmap <silent> <leader>k :ALEPrevious<CR>
 
-let g:ctrlp_custom_ignore = 'node_modules\|bower_components'
+" FLEXPORT
+let g:ale_ruby_rubocop_options = '-c ~/flexport/.rubocop_next.yml --display-cop-names --display-style-guide'
 
-"For personal Mac:
-if has ("mac")
-  let g:ctrlp_user_command = 'ag %s -l -i -U --nocolor --nogroup --hidden
-        \ --ignore ".git"
-        \ --ignore ".svn"
-        \ --ignore ".hG"
-        \ --ignore ".DS_Store"
-        \ --ignore "libv8"
-        \ --ignore "*.dsv"
-        \ --ignore "*.dsp"
-        \ --ignore "*.dsw"
-        \ --ignore "*.vcproj"
-        \ --ignore "*.*.swp"
-        \ --ignore "*.sln"
-        \ --ignore "bin"
-        \ --ignore "node_modules"
-        \ --ignore "tmp/cache"
-        \ -g ""'
-endif
+" dash {{{2
+nmap <leader>d <Plug>DashSearch
+
+"delimitMate {{{2
+let g:delimitMate_expand_cr = 1
+let g:delimitMate_expand_space = 2
+
+" far {{{2
+let g:far#source='rg'
+let g:far#highlight_match=0
+let g:far#limit=10000
+let g:far#result_preview=0
+let g:far#preview_window_height=20
+let g:far#preview_window_scroll_step=4
+
+" Find and Replace (global)
+nnoremap <leader>R :Far <c-r><c-w>  *<left><left>
+vnoremap <leader>R "my:Far "<c-r>m"  *<left><left>
 
 "fzf {{{2
 " Jump to exsting window if possible
@@ -164,6 +139,48 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --no-messages --hidden --foll
 
 nnoremap <silent> <leader>pp :Files<CR>
 nnoremap <silent> <leader>pb :Buffers<CR>
+
+"localvimrc {{{2
+let g:localvimrc_whitelist='.*/proj/\.lvimrc'
+
+" neoformat {{{2
+" enable basic formatting when filetype is not found
+let g:neoformat_basic_format_align = 1
+let g:neoformat_try_formatprg = 1
+
+nnoremap ==G :Neoformat<CR>
+" polyglot {{{2
+let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
+let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
+let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+
+" ripgrep {{{2
+" lets sort our results
+let g:rg_binary = 'rg'
+let g:rg_command = g:rg_binary . ' --vimgrep --sort path'
+
+" solarized colour scheme {{{2
+colorscheme solarized
+if has("gui_running")
+  set background=light
+else
+  set t_Co=256
+  colorscheme solarized
+  set background=dark
+endif
+
+" tabularize {{{2
+nnoremap <leader>tt :Tabularize /
+
+" tagbar {{{2
+let g:tagbar_zoomwidth = 0
+
+" undotree {{{2
+nnoremap <leader>u :UndotreeToggle<CR>
 
 "vim-easymotion {{{2
 vmap f <leader><leader>f
@@ -189,50 +206,24 @@ nmap dF d<leader><leader>F
 nmap dt d<leader><leader>t
 nmap dT d<leader><leader>T
 
+"vim-signature {{{2
+nmap dmm m-
+nmap dma m<space>
 
-"SimpylFold {{{2
-let g:SympylFold_docstring_preview = 1
-"let g:SympylFold_fold_docstring = 0
+" YouCompleteMe {{{2
+if has ('mac')
+  let g:ycm_autoclose_preview_window_after_insertion = 1
+  let g:ycm_confirm_extra_conf = 0
+  let g:ycm_warning_symbol = '₩₩'
+  let g:ycm_error_symbol = '€€'
+endif
 
-autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
-autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
+let g:ycm_disable_for_files_larger_than_kb = 40
 
-"delimitMate {{{2
-let g:delimitMate_expand_cr = 1
-let g:delimitMate_expand_space = 2
-
-"localvimrc {{{2
-let g:localvimrc_whitelist='.*/proj/\.lvimrc'
-
-" ale {{{2
-let g:ale_lint_on_text_changed = 'never'
-
-let g:ale_linters = {
-      \ 'javascript': ['eslint'],
-      \ 'haskell': ['hdevtools'],
+let g:ycm_semantic_triggers = {
+      \'css': [ 're!^\s\s\s', 're!:\s+' ],
       \}
-
-" far {{{2
-let g:far#source='rg'
-let g:far#highlight_match=0
-let g:far#limit=10000
-let g:far#result_preview=0
-let g:far#preview_window_height=20
-let g:far#preview_window_scroll_step=4
-
-" polyglot {{{2
-let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
-let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
-let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
-let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
-let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
-let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
-let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
-
-" neoformat {{{2
-" enable basic formatting when filetype is not found
-let g:neoformat_basic_format_align = 1
-let g:neoformat_try_formatprg = 1
+let g:ycm_global_ycm_extra_conf = "~/.ycm_extra_conf.py"
 
 "Vim Basic Settings {{{1
 
@@ -372,11 +363,6 @@ nnoremap <space> :bn<cr>
 " We'll need a GUI for nvim
 nnoremap <S-space> :bp<cr>
 
-" Visual mode pressing * or # searches for the current selection
-" TODO: Doesn't work
-vnoremap <silent> * :call VisualSelection('f')<CR>
-vnoremap <silent> # :call VisualSelection('b')<CR>
-
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
@@ -388,22 +374,12 @@ map Y y$
 nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
 nnoremap <leader>lv :so $MYVIMRC<CR>
 
-" Quickly edit notes
-" TODO: NOT VALID FILE PATH
-nnoremap <leader>en :e ~/dev/my-vimrc/shortcuts.txt<CR>
-
 " Switch between source and header file
 nnoremap <silent> <leader>sf :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 nnoremap <silent> <leader>SF :vs <CR>:e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 
 " Remove highlighting from searching
 nnoremap <silent>\ :noh<CR>
-
-" Easy resizing
-"nnoremap <c-s> :set lines+=1<cr>
-"nnoremap <c-a> :set lines-=1<cr>
-"nnoremap <c-q> :set columns-=3<cr>
-"nnoremap <c-w> :set columns+=3<cr>
 
 " Allow quick window switching
 nnoremap <C-h> <C-w>h
@@ -420,12 +396,18 @@ vnoremap ; :
 nnoremap ; :
 
 " Commandline behaviour
+nnoremap <c-a> <home>
+nnoremap <c-e> <end>
+
+inoremap <c-a> <home>
+inoremap <c-e> <end>
+
 cnoremap <c-a> <home>
 cnoremap <c-e> <end>
 
 " Faster movements
-nnoremap s jjjj
-nnoremap S kkkk
+nnoremap s <c-d>
+nnoremap S <c-u>
 
 " Search (global)
 nnoremap <leader>s :Rg <c-r><c-w>
@@ -435,15 +417,7 @@ vnoremap <leader>s "my:Rg "<c-r>m"
 nnoremap <leader>r :%s//gc<left><left><left>
 vnoremap <leader>r "my:%s/<c-r>m//gc<left><left><left>
 
-" Find and Replace (global)
-nnoremap <leader>R :Far <c-r><c-w>  *<left><left>
-vnoremap <leader>R "my:Far "<c-r>m"  *<left><left>
-
 vnoremap / "my/<c-r>m<cr>
-nnoremap <leader>tt :Tabularize /
-nnoremap <leader>u :UndotreeToggle<CR>
-
-nnoremap ==G :Neoformat<CR>
 
 if has('nvim')
   " Terminfo problem
@@ -463,18 +437,9 @@ if has('nvim')
   nnoremap <A-l> <C-w>l
 endif
 
-nmap <leader>d <Plug>DashSearch
-
-"Not working!!
-nnoremap <leader>ct :!ctags %<CR>
 
 " Abbreviations for commandline
-"ca WQ wq
 ca Wq wq
-"ca Q q
-"ca W w
-ca do DiffOrig
-ca df diffoff
 "Commands {{{1
 
 " Cannot have the pipe in cnorea
@@ -547,8 +512,15 @@ augroup END
 " Neovim {{{1
 if has("nvim")
   " Faster startup
-  let g:python_host_prog = '/Users/kevin/.pyenv/versions/neovim2/bin/python'
-  let g:python3_host_prog = '/Users/kevin/.pyenv/versions/neovim3/bin/python'
+  let g:python_host_prog = expand('~') . '/.pyenv/versions/neovim2/bin/python'
+  let g:python3_host_prog = expand('~') . '/.pyenv/versions/neovim3/bin/python'
+
+  " Use the homebrew shell if it exists
+  let brew_zsh = '/usr/local/bin/zsh'
+  if !empty(glob(brew_zsh))
+    " Vim takes the right side of the equal literally
+    set shell=/usr/local/bin/zsh
+  end
 
   autocmd!
   augroup nvimGroup
@@ -564,3 +536,5 @@ endif
 
 " Needs to be defined here for some reason (probably some plugin messing with the setting)
 syntax enable
+
+" FLEXPORT {{{1

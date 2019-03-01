@@ -53,7 +53,7 @@
 - Vimrc:
   - `ln -s ~/dotfiles/vim/vimrc ~/.config/nvim/init.vim`
 - Zshrc:
-  - `echo "source ~/dotfiles/zsh/startup.sh" > .zshrc`
-  - `echo "source ~/dotfiles/zsh/alias.sh" > .zshrc`
+  - `echo "source ~/dotfiles/zsh/startup.zsh" >> .zshrc`
+  - `echo "source ~/dotfiles/zsh/alias.zsh" >> .zshrc`
 - Ag:
   - `ln -s ~/dotfiles/ag/ignore ~/.agignore'`
