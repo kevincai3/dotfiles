@@ -9,11 +9,10 @@
 - jq
 - neovim
 - pyenv
+- pyenv-virtualenv
 - trash
 - fswatch
-- openssl
 - git
-- yarn
 - pgcli
 - ripgrep
 
@@ -22,9 +21,11 @@
 - iTerm2
 - hammerspoon
 - dynalist
+- notion
 - cryptomator
-- typora
+- keepassxc
 - docker
+- prezto
 
 ## Python Tools
 - Pygments (the executable is called pygmentize)
@@ -51,9 +52,7 @@
 
 ## Configuration files
 - Vimrc:
-  - `ln -s ~/dotfiles/vim/vimrc ~/.config/nvim/init.vim`
+  - `mkdir -p ~/.config/nvim && ln -s ~/dotfiles/vim/vimrc ~/.config/nvim/init.vim`
 - Zshrc:
   - `echo "source ~/dotfiles/zsh/startup.zsh" >> .zshrc`
   - `echo "source ~/dotfiles/zsh/alias.zsh" >> .zshrc`
-- Ag:
-  - `ln -s ~/dotfiles/ag/ignore ~/.agignore'`
