@@ -56,3 +56,4 @@
 - Zshrc:
   - `echo "source ~/dotfiles/zsh/startup.zsh" >> .zshrc`
   - `echo "source ~/dotfiles/zsh/alias.zsh" >> .zshrc`
+  - `echo "source ~/dotfiles/zsh/_git" >> .zshrc`
