@@ -32,6 +32,7 @@ Plug 'scrooloose/nerdcommenter' "Easy Comments
 
 " Vim Apparence
 Plug 'altercation/vim-colors-solarized'
+Plug 'morhetz/gruvbox'
 if !exists("g:gui_oni")
   Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
@@ -49,6 +50,7 @@ Plug 'bitc/vim-hdevtools' "Haskell type information
 " Git integration
 Plug 'tpope/vim-fugitive' "Need to learn
   Plug 'tpope/vim-rhubarb' "Github plugins
+Plug 'airblade/vim-gitgutter' "Show changes in gutter
 
 " Auto Complete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -68,6 +70,7 @@ Plug 'Raimondi/delimitMate' "Autocomplete brackets
 Plug 'vim-scripts/restore_view.vim' "Preserves folds through buffer enter and leaves
 Plug 'mbbill/undotree' "AMAZING
 Plug 'wincent/terminus' "Better iterm integration
+Plug 'Yggdroot/indentLine' "Show those indents BABY
 
 " Required:
 call plug#end()
@@ -78,22 +81,20 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-if has("mac")
-  let g:airline_left_alt_sep = ""
-  let g:airline_left_sep = ""
-  let g:airline_right_alt_sep = ""
-  let g:airline_right_sep = ""
-  let g:airline_symbols.branch = ""
-  let g:airline_symbols.readonly = ""
-  let g:airline_symbols.linenr = ""
-  let g:airline_theme="solarized"
-endif
+let g:airline_left_alt_sep = ""
+let g:airline_left_sep = ""
+let g:airline_right_alt_sep = ""
+let g:airline_right_sep = ""
+let g:airline_symbols.branch = ""
+let g:airline_symbols.readonly = ""
+let g:airline_symbols.linenr = ""
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamecollapse = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#ale#error_symbol = 'E:'
 let g:airline#extensions#ale#warning_symbol = 'W:'
+let g:airline#extensions#hunks#enabled = 0
 
 " ale {{{2
 let g:ale_lint_on_text_changed = 'never'
@@ -107,6 +108,9 @@ let g:ale_linters = {
 
 nmap <silent> <leader>j :ALENext<CR>
 nmap <silent> <leader>k :ALEPrevious<CR>
+
+let g:ale_sign_error = '!'
+let g:ale_sign_warning = '?'
 
 " FLEXPORT
 let g:ale_ruby_rubocop_options = '-c ~/flexport/.rubocop_next.yml --display-cop-names --display-style-guide'
@@ -133,7 +137,7 @@ vnoremap <leader>R "my:Far "<c-r>m"  *<left><left>
 "fzf {{{2
 " Jump to exsting window if possible
 let g:fzf_buffers_jump = 1
-
+let $FZF_DEFAULT_SORT = '100000'
 let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --no-messages --hidden --follow --glob "!.git/*"'
 
 nnoremap <silent> <leader>pp :Files<CR>
@@ -160,27 +164,34 @@ let g:rg_binary = 'rg'
 let g:rg_command = g:rg_binary . ' --vimgrep --sort path'
 
 " solarized colour scheme {{{2
-colorscheme solarized
-set t_Co=256
-colorscheme solarized
+" colorscheme solarized
+" set background=dark
+
+" gruvbox colour scheme {{{2
+set termguicolors
+let g:gruvbox_italic=1
+let g:gruvbox_contrast_dark='hard'
+let g:gruvbox_sign_column="bg0"
+
+colorscheme gruvbox
 set background=dark
 
 " tabularize {{{2
 nnoremap <leader>tt :Tabularize /
-
 
 " undotree {{{2
 nnoremap <leader>u :UndotreeToggle<CR>
 
 " vim-sneak {{{2
 let g:sneak#s_next = 1
+let g:sneak#label = 1
 
 map f <Plug>Sneak_s
 map F <Plug>Sneak_S
 
 " CoC {{{2
-if !exists("LoadAllCoCPlugins")
-  function! LoadAllCoCPlugins()
+if !exists("CocLoadAllPlugins")
+  function! CocLoadAllPlugins()
     CocInstall coc-json
     CocInstall coc-tabnine
     CocInstall coc-tsserver
@@ -190,18 +201,16 @@ if !exists("LoadAllCoCPlugins")
     CocInstall coc-yank
     CocInstall coc-lists
     CocInstall coc-emoji
+    CocInstall coc-highlight
   endfunction
-endif
 
-set updatetime=300
+  command! CocLoadAllPlugins :call CocLoadAllPlugins()
+endif
 
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
 
 nnoremap <c-p> :CocList<CR>
-
-" always show signcolumns
-" set signcolumn=yes
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -237,6 +246,9 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 nmap dmm m-
 nmap dma m<space>
 
+" indentLine {{{2
+let g:indentLine_char = '|'
+
 " NERDcommenter
 
 " Disable default mappings
@@ -250,6 +262,16 @@ let g:NERDDefaultAlign = 'start'
 
 nmap <leader>cc <Plug>NERDCommenterToggle
 vmap <leader>cc <Plug>NERDCommenterToggle
+
+" gitgutter {{{2
+set signcolumn=yes
+
+let g:gitgutter_sign_deleted            = '▐'
+let g:gitgutter_sign_added              = '▐'
+let g:gitgutter_sign_modified           = '▐'
+let g:gitgutter_sign_removed            = '▐'
+let g:gitgutter_sign_removed_first_line = '▐'
+let g:gitgutter_sign_modified_removed   = '▐'
 
 "Vim Basic Settings {{{1
 
@@ -317,9 +339,6 @@ set shiftwidth=2
 set softtabstop=-1 "Make it depend on shiftwidth
 set tabstop=2
 
-" Fold manually TODO: Maybe only apply this for .vimrc?
-set foldmethod=marker
-
 " Don't auto close all folds
 set foldlevelstart=99
 
@@ -332,23 +351,18 @@ set wildmode=longest,list
 
 " Shows unprintable characters
 set list
-set listchars=eol:¬,tab:▶·
-hi SpecialKey guibg=#FEF7E7
+set listchars=tab:▶·
 
 " Prevent two file changes on save
 set nobackup
 set nowritebackup
+" Enable faster updatetime
+set noswapfile
 
-" Invisible character colors
-"highlight NonText guifg=#4a4a59
-"highlight SpecialKey guifg=#4a4a59
+" How long to wait before triggering CursorHold
+set updatetime=50
 
 set splitright
-
-" Mark lines over 80
-
-highlight OverLength ctermbg=10 ctermfg=7 guibg=#e2d6b6
-match OverLength /\%81v.\+/
 
 " Always have lines showing when scrolling
 set scrolloff=5
@@ -371,6 +385,9 @@ set modeline
 if executable('rg') == 1
   set grepprg=rg\ --vimgrep
 end
+
+" Display diffs vertically
+set diffopt=vertical
 
 "Custom Mappings {{{1
 "Changes directory to current file TODO: Put this in shortcuts
@@ -474,10 +491,6 @@ cnorea wb WBD
 
 "User Defined Functions {{{1
 
-if !exists(":ClearTraillingWhitespace")
-  command ClearTraillingWhitespace %s/\s\+$//
-endif
-
 "TODO: Define function for binding commands only if command does not exists
 " Diff this file with the corresponding file on disk
 if !exists(":DiffOrig")
@@ -540,15 +553,12 @@ if has("nvim")
     set shell=/usr/local/bin/zsh
   end
 
-  autocmd!
   augroup nvimGroup
+    autocmd!
     " Don't display invisible characters
     autocmd TermOpen * setlocal nolist
 
     autocmd TermOpen * setlocal nonumber
-
-    " Don't highlight words over 80 lines
-    autocmd TermOpen * match none
   augroup END
 endif
 

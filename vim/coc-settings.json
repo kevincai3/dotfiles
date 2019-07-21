@@ -1,3 +1,4 @@
 {
-  "list.maxHeight": 20
+  "list.maxHeight": 20,
+  "coc.preferences.diagnostic.displayByAle": true
 }
