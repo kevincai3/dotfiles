@@ -2,7 +2,6 @@
 
 ## TODO:
 - Configure zsh to use vi bindings
-- Alias long git commands
 
 ## Homebrew Utils
 - fasd
@@ -15,25 +14,22 @@
 - git
 - pgcli
 - ripgrep
+= zsh
 
 ## Other Utils
 - nvm
 - iTerm2
 - hammerspoon
-- dynalist
-- notion
 - cryptomator
 - keepassxc
 - docker
 - prezto
+- bear
 
 ## Python Tools
 - Pygments (the executable is called pygmentize)
-- scipy
-- numpy
 - neovim
 - grip
-
 
 ## Javascript Tools
 - yarn
@@ -53,7 +49,10 @@
 ## Configuration files
 - Vimrc:
   - `mkdir -p ~/.config/nvim && ln -s ~/dotfiles/vim/vimrc ~/.config/nvim/init.vim`
+  - `mkdir -p ~/.config/nvim && ln -s ~/dotfiles/vim/coc-settings.json ~/.config/nvim/coc-settings.json`
 - Zshrc:
   - `echo "source ~/dotfiles/zsh/startup.zsh" >> .zshrc`
   - `echo "source ~/dotfiles/zsh/alias.zsh" >> .zshrc`
   - `echo "source ~/dotfiles/zsh/_git" >> .zshrc`
+- Hammerspoon
+  - `mkdir -p ~/.hammerspoon && ln -s ~/dotfiles/hammerspoon.lua ~/.hammerspoon/init.lua`
