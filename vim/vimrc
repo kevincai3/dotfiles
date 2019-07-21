@@ -24,7 +24,7 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'tpope/vim-surround' "Easily change surrunding brackets
   Plug 'tpope/vim-repeat' "Repeat for vim-surround
 Plug 'vim-scripts/argtextobj.vim' "Convert arguments into objects
-Plug 'Lokaltog/vim-easymotion' "Jump around buffer
+Plug 'justinmk/vim-sneak' "Jump around buffer
 
 " Vim manipulations
 Plug 'godlygeek/tabular' "Easy tables
@@ -32,14 +32,15 @@ Plug 'scrooloose/nerdcommenter' "Easy Comments
 
 " Vim Apparence
 Plug 'altercation/vim-colors-solarized'
-Plug 'vim-airline/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
+if !exists("g:gui_oni")
+  Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+end
 Plug 'kshenoy/vim-signature' "Show marks in the gutter
 
-" Syntax and Language Specifics
+" Syntax, Linters and Formaters
 Plug 'sheerun/vim-polyglot' "Bunch of syntax in one plugin
 Plug 'w0rp/ale' "Linter
-Plug 'sbdchd/neoformat' "Code formatting
 
 " Language specifics
 Plug 'hail2u/vim-css3-syntax' "Extra CSS3 highlighting
@@ -50,9 +51,7 @@ Plug 'tpope/vim-fugitive' "Need to learn
   Plug 'tpope/vim-rhubarb' "Github plugins
 
 " Auto Complete
-"Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer' }
-Plug 'Raimondi/delimitMate' "Autocomplete brackets
-" Testing autocomplete
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'zxqfl/tabnine-vim'
 
 " Directory specific vimrc
@@ -65,10 +64,10 @@ Plug 'qpkorr/vim-bufkill'
 Plug 'scrooloose/nerdtree'
 
 " Misc
+Plug 'Raimondi/delimitMate' "Autocomplete brackets
 Plug 'vim-scripts/restore_view.vim' "Preserves folds through buffer enter and leaves
 Plug 'mbbill/undotree' "AMAZING
 Plug 'wincent/terminus' "Better iterm integration
-Plug 'rizzatti/dash.vim' "Dash Integrations
 
 " Required:
 call plug#end()
@@ -143,12 +142,6 @@ nnoremap <silent> <leader>pb :Buffers<CR>
 "localvimrc {{{2
 let g:localvimrc_whitelist='.*/proj/\.lvimrc'
 
-" neoformat {{{2
-" enable basic formatting when filetype is not found
-let g:neoformat_basic_format_align = 1
-let g:neoformat_try_formatprg = 1
-
-nnoremap ==G :Neoformat<CR>
 " polyglot {{{2
 let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
 let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
@@ -165,65 +158,93 @@ let g:rg_command = g:rg_binary . ' --vimgrep --sort path'
 
 " solarized colour scheme {{{2
 colorscheme solarized
-if has("gui_running")
-  set background=light
-else
-  set t_Co=256
-  colorscheme solarized
-  set background=dark
-endif
+set t_Co=256
+colorscheme solarized
+set background=dark
 
 " tabularize {{{2
 nnoremap <leader>tt :Tabularize /
 
-" tagbar {{{2
-let g:tagbar_zoomwidth = 0
 
 " undotree {{{2
 nnoremap <leader>u :UndotreeToggle<CR>
 
-"vim-easymotion {{{2
-vmap f <leader><leader>f
-vmap F <leader><leader>F
-vmap t <leader><leader>t
-vmap T <leader><leader>T
-nmap f <Plug>(easymotion-sl)
-nmap F <leader><leader>F
-nmap t <leader><leader>t
-nmap T <leader><leader>T
-nmap w <leader><leader>w
-nmap W <leader><leader>W
-nmap b <leader><leader>b
-nmap B <leader><leader>B
-nmap e <leader><leader>e
-nmap E <leader><leader>E
-nmap cf c<leader><leader>f
-nmap cF c<leader><leader>F
-nmap ct c<leader><leader>t
-nmap cT c<leader><leader>T
-nmap df d<leader><leader>f
-nmap dF d<leader><leader>F
-nmap dt d<leader><leader>t
-nmap dT d<leader><leader>T
+" vim-sneak {{{2
+let g:sneak#s_next = 1
+
+map f <Plug>Sneak_s
+map F <Plug>Sneak_S
+
+" CoC {{{2
+if !exists("LoadAllCoCPlugins")
+  function! LoadAllCoCPlugins()
+    CocInstall coc-json
+    CocInstall coc-tabnine
+    CocInstall coc-tsserver
+    CocInstall coc-html
+    CocInstall coc-css
+    CocInstall coc-solargraph
+    CocInstall coc-yank
+    CocInstall coc-lists
+    CocInstall coc-emoji
+  endfunction
+endif
+
+set updatetime=300
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" always show signcolumns
+" set signcolumn=yes
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+
+" TODO: Look into `coc-format-selected`
+" Use `:Fold` to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" use `:OR` for organize import of current buffer
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
 "vim-signature {{{2
 nmap dmm m-
 nmap dma m<space>
 
-" YouCompleteMe {{{2
-if has ('mac')
-  let g:ycm_autoclose_preview_window_after_insertion = 1
-  let g:ycm_confirm_extra_conf = 0
-  let g:ycm_warning_symbol = '₩₩'
-  let g:ycm_error_symbol = '€€'
-endif
+" NERDcommenter
 
-let g:ycm_disable_for_files_larger_than_kb = 40
+" Disable default mappings
+let g:NERDCreateDefaultMappings = 0
 
-let g:ycm_semantic_triggers = {
-      \'css': [ 're!^\s\s\s', 're!:\s+' ],
-      \}
-let g:ycm_global_ycm_extra_conf = "~/.ycm_extra_conf.py"
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'start'
+
+nmap <leader>cc <Plug>NERDCommenterToggle
+vmap <leader>cc <Plug>NERDCommenterToggle
 
 "Vim Basic Settings {{{1
 
@@ -310,6 +331,7 @@ set listchars=eol:¬,tab:▶·
 hi SpecialKey guibg=#FEF7E7
 
 " Prevent two file changes on save
+set nobackup
 set nowritebackup
 
 " Invisible character colors
@@ -442,19 +464,10 @@ endif
 ca Wq wq
 "Commands {{{1
 
-" Cannot have the pipe in cnorea
-"command! WQ w|bd
-"cnorea wq WQ
-
 cnorea b BD
-
-command! WBD w|BD
 cnorea wb WBD
 
 "User Defined Functions {{{1
-function! BindCommand()
-
-endfunction
 
 if !exists(":ClearTraillingWhitespace")
   command ClearTraillingWhitespace %s/\s\+$//
@@ -537,4 +550,14 @@ endif
 " Needs to be defined here for some reason (probably some plugin messing with the setting)
 syntax enable
 
-" FLEXPORT {{{1
+" Oni {{{
+if exists("g:gui_oni")
+  set noshowmode
+  set noruler
+  set laststatus=0
+  set noshowcmd
+  set noswapfile
+
+  " Enable GUI mouse behavior
+  set mouse=a
+end
