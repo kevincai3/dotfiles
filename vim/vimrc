@@ -52,7 +52,6 @@ Plug 'tpope/vim-fugitive' "Need to learn
 " Auto Complete
 "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer' }
 Plug 'Raimondi/delimitMate' "Autocomplete brackets
-" Testing autocomplete
 Plug 'zxqfl/tabnine-vim'
 
 " Directory specific vimrc
@@ -149,6 +148,10 @@ let g:neoformat_basic_format_align = 1
 let g:neoformat_try_formatprg = 1
 
 nnoremap ==G :Neoformat<CR>
+
+" nerdtree {{{2
+nnoremap <silent> <leader>f :NERDTreeFind<CR>
+
 " polyglot {{{2
 let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
 let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
@@ -536,5 +539,3 @@ endif
 
 " Needs to be defined here for some reason (probably some plugin messing with the setting)
 syntax enable
-
-" FLEXPORT {{{1
