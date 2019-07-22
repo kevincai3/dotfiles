@@ -1,5 +1,5 @@
-"Preamble {{{1
-set nocompatible               " be iMproved, required
+" Preamble {{{1
+set nocompatible               "be iMproved, required
 set backspace=indent,eol,start
 let mapleader = ','
 
@@ -8,9 +8,10 @@ let mapleader = ','
 call plug#begin('~/.vim/plugged')
 " Bundles here:
 
-" Fuzzy file searching
-Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --bin'}
+" File navigation
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --bin'} "Fuzzy search
 Plug 'junegunn/fzf.vim'
+Plug 'scrooloose/nerdtree' "Tree view
 
 " Searching
 Plug 'brooth/far.vim', {'branch': 'dev'} "Only dev branch has support for ripgrep
@@ -25,20 +26,19 @@ Plug 'justinmk/vim-sneak' "Jump around buffer
 " Vim manipulations
 Plug 'godlygeek/tabular' "Easy tables
 Plug 'scrooloose/nerdcommenter' "Easy Comments
+Plug 'Raimondi/delimitMate' "Autocomplete brackets
 
 " Vim Apparence
-Plug 'altercation/vim-colors-solarized'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
 Plug 'kshenoy/vim-signature' "Show marks in the gutter
+Plug 'Yggdroot/indentLine' "Show those indents BABY
 
 " Syntax, Linters and Formaters
 Plug 'sheerun/vim-polyglot' "Bunch of syntax in one plugin
-Plug 'w0rp/ale' "Linter
-
-" Language specifics
 Plug 'hail2u/vim-css3-syntax' "Extra CSS3 highlighting
+Plug 'w0rp/ale' "Linter
 
 " Git integration
 Plug 'tpope/vim-fugitive' "Need to learn
@@ -49,26 +49,20 @@ Plug 'airblade/vim-gitgutter' "Show changes in gutter
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'zxqfl/tabnine-vim'
 
-" Directory specific vimrc
-Plug 'embear/vim-localvimrc'
+" Undo Tree
+Plug 'mbbill/undotree'
 
-" Perserve window when deleting buffer
-Plug 'qpkorr/vim-bufkill'
-
-" Tree view is sometimes useful
-Plug 'scrooloose/nerdtree'
-
-" Misc
-Plug 'Raimondi/delimitMate' "Autocomplete brackets
+" Vim QOL
+Plug 'embear/vim-localvimrc' " Directory specific vimrc
+Plug 'qpkorr/vim-bufkill' " Perserve window when deleting buffer
 Plug 'vim-scripts/restore_view.vim' "Preserves folds through buffer enter and leaves
-Plug 'mbbill/undotree' "AMAZING
 Plug 'wincent/terminus' "Better iterm integration
-Plug 'Yggdroot/indentLine' "Show those indents BABY
+Plug 'yssl/QFEnter' "Open quickfix in last used pane
 
 " Required:
 call plug#end()
 
-"Plugin Configs {{{1
+" Plugin Configs {{{1
 " airline {{{2
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -100,7 +94,7 @@ let g:airline#extensions#hunks#enabled = 0
 
 " ale {{{2
 let g:ale_lint_on_text_changed = 'never'
-let g:ale_set_ballons = 1 " NVIM currently doesn't support hovers
+let g:ale_set_ballons = 1 "NVIM currently doesn't support hovers
 
 let g:ale_linters = {
       \ 'javascript': ['eslint', 'flow'],
@@ -119,7 +113,7 @@ let g:ale_ruby_rubocop_options = '-c ~/flexport/.rubocop_next.yml --display-cop-
 " dash {{{2
 nmap <leader>d <Plug>DashSearch
 
-"delimitMate {{{2
+" delimitMate {{{2
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 2
 
@@ -135,7 +129,7 @@ let g:far#preview_window_scroll_step=4
 nnoremap <leader>R :Far <c-r><c-w>  *<left><left>
 vnoremap <leader>R "my:Far "<c-r>m"  *<left><left>
 
-"fzf {{{2
+" fzf {{{2
 " Jump to exsting window if possible
 let g:fzf_buffers_jump = 1
 let $FZF_DEFAULT_SORT = '100000'
@@ -144,29 +138,25 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --no-messages --hidden --foll
 nnoremap <silent> <leader>pp :Files<CR>
 nnoremap <silent> <leader>pb :Buffers<CR>
 
-"localvimrc {{{2
+" localvimrc {{{2
 let g:localvimrc_whitelist='.*/proj/\.lvimrc'
 
 " nerdtree {{{2
 nnoremap <silent> <leader>f :NERDTreeFind<CR>
 
 " polyglot {{{2
-let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
-let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
-let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
-let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
-let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
-let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
-let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+let g:haskell_enable_quantification = 1   "to enable highlighting of `forall`
+let g:haskell_enable_recursivedo = 1      "to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax = 1      "to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1 "to enable highlighting of `pattern`
+let g:haskell_enable_typeroles = 1        "to enable highlighting of type roles
+let g:haskell_enable_static_pointers = 1  "to enable highlighting of `static`
+let g:haskell_backpack = 1                "to enable highlighting of backpack keywords
 
 " ripgrep {{{2
 " lets sort our results
 let g:rg_binary = 'rg'
 let g:rg_command = g:rg_binary . ' --vimgrep --sort path'
-
-" solarized colour scheme {{{2
-" colorscheme solarized
-" set background=dark
 
 " gruvbox colour scheme {{{2
 set termguicolors
@@ -190,27 +180,29 @@ let g:sneak#label = 1
 map f <Plug>Sneak_s
 map F <Plug>Sneak_S
 
-" CoC {{{2
+" Coc {{{2
 if !exists("CocLoadAllPlugins")
   function! CocLoadAllPlugins()
-    CocInstall coc-json
-    CocInstall coc-tabnine
-    CocInstall coc-tsserver
-    CocInstall coc-html
-    CocInstall coc-css
-    CocInstall coc-solargraph
-    CocInstall coc-yank
-    CocInstall coc-lists
     CocInstall coc-emoji
     CocInstall coc-highlight
+    CocInstall coc-lists
+    CocInstall coc-tabnine
+    CocInstall coc-yank
+
+    CocInstall coc-css
+    CocInstall coc-html
+    CocInstall coc-json
+    CocInstall coc-solargraph
+    CocInstall coc-tsserver
   endfunction
 
   command! CocLoadAllPlugins :call CocLoadAllPlugins()
 endif
 
-" don't give |ins-completion-menu| messages.
+" Don't give |ins-completion-menu| messages.
 set shortmess+=c
 
+" Requires mapping <cmd-p> to 0x10 in iterm
 nnoremap <c-p> :CocList<CR>
 
 " Remap keys for gotos
@@ -243,14 +235,14 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " use `:OR` for organize import of current buffer
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
-"vim-signature {{{2
+" vim-signature {{{2
 nmap dmm m-
 nmap dma m<space>
 
 " indentLine {{{2
 let g:indentLine_char = '|'
-
-" NERDcommenter
+     
+" NERDcommenter {{{2
 
 " Disable default mappings
 let g:NERDCreateDefaultMappings = 0
@@ -258,7 +250,7 @@ let g:NERDCreateDefaultMappings = 0
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 
-" Align line-wise comment delimiters flush left instead of following code indentation
+" Insert comment delimiters on first column
 let g:NERDDefaultAlign = 'start'
 
 nmap <leader>cc <Plug>NERDCommenterToggle
@@ -274,7 +266,7 @@ let g:gitgutter_sign_removed            = '▐'
 let g:gitgutter_sign_removed_first_line = '▐'
 let g:gitgutter_sign_modified_removed   = '▐'
 
-"Vim Basic Settings {{{1
+" Vim Basic Settings {{{1
 
 " Setting up persistent undo
 if has("persistent_undo")
@@ -390,11 +382,11 @@ end
 " Display diffs vertically
 set diffopt=vertical
 
-"Custom Mappings {{{1
-"Changes directory to current file TODO: Put this in shortcuts
+" Custom Mappings {{{1
+" Changes directory to current file TODO: Put this in shortcuts
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
-"Don't move on *
+" Don't move on *
 nnoremap * *<c-o>
 
 " Centers word in middle on n and N
@@ -403,12 +395,10 @@ nnoremap N Nzzzv
 
 " Gotta put that space to good use
 nnoremap <space> :bn<cr>
+" Requires binding <s-space> to 0x00 in iterm
+nnoremap <c-space> :bp<cr>
 
-" Shift space does not work in terminal mode!
-" We'll need a GUI for nvim
-nnoremap <S-space> :bp<cr>
-
-" Treat long lines as break lines (useful when moving around in them)
+" Treat long lines as break lines
 map j gj
 map k gk
 
@@ -418,10 +408,6 @@ map Y y$
 " Quickly edit/reload the vimrc file
 nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
 nnoremap <leader>lv :so $MYVIMRC<CR>
-
-" Switch between source and header file
-nnoremap <silent> <leader>sf :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-nnoremap <silent> <leader>SF :vs <CR>:e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 
 " Remove highlighting from searching
 nnoremap <silent>\ :noh<CR>
@@ -482,60 +468,37 @@ if has('nvim')
   nnoremap <A-l> <C-w>l
 endif
 
+" Commands {{{1
 
 " Abbreviations for commandline
 ca Wq wq
-"Commands {{{1
 
 cnorea b BD
 cnorea wb WBD
 
-"User Defined Functions {{{1
+" User Defined Functions {{{1
 
-"TODO: Define function for binding commands only if command does not exists
-" Diff this file with the corresponding file on disk
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
-endif
-
-if has ('mac')
-  if exists(":EditAlias")
-    delcommand EditAlias
-  endif
-  command EditAlias e ~/.alias.sh
-  if exists(":OpenTerm")
-    delcommand OpenTerm
-  endif
-  command OpenTerm call system("open -a Terminal '".getcwd()."'")
-endif
+command! EditAlias e ~/dotfiles/zsh/alias.zsh
+command! OpenTerm call system("open -a iterm '".getcwd()."'")
 
 "Autocmds {{{1
-
-augroup vimrcEx
-  "Clear all autocmds in the group
+augroup blah
   autocmd!
+
   "Jump to last cursor position
   autocmd BufReadPost *
         \ if line("'\'") > 0 && line("'\'") <= line("$") |
         \    exe "normal g`\"" |
         \ endif
-augroup END
 
-augroup blah
-  autocmd!
   " Turn off autoindent for comments for all files
   " :help |fo-table|
   autocmd FileType * setlocal formatoptions-=cro
   autocmd FileType html setlocal shiftwidth=2
   autocmd FileType sql setlocal shiftwidth=2
   autocmd FileType py setlocal shiftwidth=2
-  autocmd FileType ejs setlocal syntax=html
-  autocmd Filetype jsx setlocal filetype=javascript.jsx
+  autocmd Filetype jsx setlocal filetype=javascript,jsx
 
-  " For node projects
-  autocmd BufNewFile,BufRead www setfiletype javascript
-
-  autocmd BufNewFile,BufRead *.ejs setfiletype ejs
   autocmd BufNewFile,BufRead *.tex setfiletype tex
   autocmd BufNewFile,BufRead *.nvimrc setfiletype vim
 
