@@ -15,20 +15,23 @@ hs.alert.show("Config loaded")
 
 -- Show grid
 local grid = hs.grid
-grid.setGrid('6x6')
+
+grid.setGrid('4x4')
+--[[
 grid.HINTS={
     {'Q', 'W', 'E', 'R', 'T', 'Y'},
     {'A', 'S', 'D', 'F', 'G', 'H'},
     {'Z', 'X', 'C', 'V', 'B', 'N'}
 }
 grid.ui.showExtraKeys = false
+]]--
 hs.hotkey.bind({'cmd', 'alt'}, 'g', grid.show)
 
 -- Multi-window layouts
 
 
 -- Simple window resizing
--- side :: enum ["left", "right", "top", "bottom"];
+-- side :: enum ["left", "right"];
 function pushToSide(side)
     local win = hs.window.focusedWindow()
     local f = win:frame()

@@ -1,4 +1,6 @@
 {
   "list.maxHeight": 20,
-  "coc.preferences.diagnostic.displayByAle": true
+  "coc.preferences.diagnostic.displayByAle": true,
+  "tsserver.enableJavascript": false,
+  "coc.preferences.colorSupport": false
 }
