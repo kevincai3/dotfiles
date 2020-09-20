@@ -14,7 +14,7 @@
 - git
 - pgcli
 - ripgrep
-= zsh
+- zsh
 
 ## Other Utils
 - nvm
@@ -25,6 +25,8 @@
 - docker
 - prezto
 - bear
+- things3
+- snappy app (MAC app store)
 
 ## Python Tools
 - Pygments (the executable is called pygmentize)
