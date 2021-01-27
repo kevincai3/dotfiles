@@ -14,5 +14,6 @@ eval "$(pyenv virtualenv-init -)"
 export PATH="$PATH:$HOME/.rvm/bin"
 
 source $DOTFILES_PATH/zsh/main.zsh
+source $DOTFILES_PATH/zsh/alias.zsh
 
 export PATH="$PATH:$HOME/bin"
