@@ -17,16 +17,18 @@
 - zsh
 
 ## Other Utils
-- nvm
-- iTerm2
-- hammerspoon
-- cryptomator
-- keepassxc
-- docker
-- prezto
-- bear
-- things3
-- snappy app (MAC app store)
+- nvm (website)
+- iTerm2 (website)
+- hammerspoon (website)
+- cryptomator (website)
+- keepassxc (website)
+- docker (website)
+- prezto (github)
+- bear (mac app store)
+- things3 (mac app store)
+- snappy app (mac app store)
+- duplicacy cli (Github)
+- rclone (website)
 
 ## Python Tools
 - Pygments (the executable is called pygmentize)
