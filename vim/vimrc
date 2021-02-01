@@ -9,8 +9,8 @@ call plug#begin('~/.vim/plugged')
 " Bundles here:
 
 " File navigation
-Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --bin'} "Fuzzy search
-Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "Required with below, installs fzf binary
+Plug 'junegunn/fzf.vim' "Fuzzy search
 Plug 'scrooloose/nerdtree' "Tree view
 
 " Searching
@@ -47,7 +47,7 @@ Plug 'tpope/vim-fugitive' "Need to learn
 
 " Auto Complete
 "Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'zxqfl/tabnine-vim'
+Plug 'codota/tabnine-vim'
 
 " Undo Tree
 Plug 'mbbill/undotree'
@@ -93,7 +93,11 @@ let g:airline#extensions#ale#warning_symbol = 'W:'
 let g:airline#extensions#hunks#enabled = 0
 
 " ale {{{2
-let g:ale_set_ballons = 1 "NVIM currently doesn't support hovers
+let g:ale_set_ballons = 0
+
+" Disable type information on hover
+let g:ale_hover_to_preview = 0
+let g:ale_hover_cursor = 0
 
 let g:ale_linters = {
       \ 'javascript': ['prettier', 'flow-language-server', 'eslint'],
@@ -135,6 +139,7 @@ vnoremap <leader>R "my:Far "<c-r>m"  *<left><left>
 " fzf {{{2
 " Jump to exsting window if possible
 let g:fzf_buffers_jump = 1
+let g:fzf_preview_window = ['right:hidden', 'ctrl-/']
 let $FZF_DEFAULT_SORT = '100000'
 let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --no-messages --hidden --glob "!.git/*"'
 

@@ -7,7 +7,7 @@ alias vim='nvim'
 
 # Git stuff
 alias gad='git add'
-alias gbr='git branch'
+alias gbr='git branch --sort=-committerdate'
 alias gbr!="git branch | grep \* | cut -d ' ' -f2 | pbcopy"
 alias gco='git checkout'
 alias gcm='git commit'
@@ -22,6 +22,9 @@ alias gsh='git stash'
 alias gwip='git commit -m "WIP" -n'
 
 alias trash='trash -F'
+
+alias new_master='gco master && gpl && yarn && bundle'
+alias rebase_master='git fetch origin master && git rebase origin master'
 
 # Alias "with" arguments
 function gdf() {
